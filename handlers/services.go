@@ -316,3 +316,14 @@ func apiServiceHitsHandler(r *http.Request) interface{} {
 	query.Find(&hts)
 	return hts
 }
+
+func apiServiceResponseCodeHandler(w http.ResponseWriter, r *http.Request) interface{} {
+	r.ParseForm() // do I need to do this for connection close reasons?
+	
+	service, err := findService(r)
+	if err != nil {
+		return err
+	}
+	
+	return returnResponseCode(service, r)
+}
