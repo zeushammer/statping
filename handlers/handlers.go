@@ -211,8 +211,8 @@ func returnLastResponse(s *services.Service, w http.ResponseWriter, r *http.Requ
 	// https://golang.org/src/net/http/server.go?s=3003:5866#L150
 
 	if s.LastStatusCode >= 100 {
-		w.WriteHeader(s.LastStatusCode)
-		w.Write([]byte(s.DownText))
+		w.WriteHeader(s.StoredStatusCode)
+		w.Write([]byte(s.StoredText))
 		return
 	}
 

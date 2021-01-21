@@ -412,6 +412,10 @@ func RecordSuccess(s *Service) {
 	s.LastLatency = hit.Latency
 	metrics.Gauge("online", 1., s.Name, s.Type)
 	metrics.Inc("success", s.Name)
+
+	s.CurrentFailureCount = 0
+	s.StoredStatusCode = s.LastStatusCode
+
 	sendSuccess(s)
 }
 
@@ -445,6 +449,12 @@ func RecordFailure(s *Service, issue, reason string) {
 
 	metrics.Gauge("online", 0., s.Name, s.Type)
 	metrics.Inc("failure", s.Name)
+
+	s.CurrentFailureCount++
+	if s.CurrentFailureCount >= s.FailureThreshold {
+		s.StoredStatusCode = s.LastStatusCode
+		s.StoredText = s.DownText
+	}
 	sendFailure(s, fail)
 }
 

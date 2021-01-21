@@ -51,7 +51,9 @@ type Service struct {
 	AllowNotifications  null.NullBool         `gorm:"default:true;column:allow_notifications" json:"allow_notifications" yaml:"allow_notifications" scope:"user,admin"`
 	UpdateNotify        null.NullBool         `gorm:"default:true;column:notify_all_changes" json:"notify_all_changes" yaml:"notify_all_changes" scope:"user,admin"` // This Variable is a simple copy of `core.CoreApp.UpdateNotify.Bool`
 	DownText            string                `gorm:"-" json:"-" yaml:"-"`                                                                                           // Contains the current generated Downtime Text 	// Is 'true' if the user has already be informed that the Services now again available // Is 'true' if the user has already be informed that the Services now again available
+	StoredText          string                `gorm:"-" json:"-" yaml:"-"`
 	LastStatusCode      int                   `gorm:"-" json:"status_code" yaml:"-"`
+	StoredStatusCode    int                   `gorm:"-" json:"-" yaml:"-"`
 	LastLookupTime      int64                 `gorm:"-" json:"-" yaml:"-"`
 	LastLatency         int64                 `gorm:"-" json:"-" yaml:"-"`
 	LastCheck           time.Time             `gorm:"-" json:"-" yaml:"-"`
@@ -62,6 +64,8 @@ type Service struct {
 	Incidents           []*incidents.Incident `gorm:"foreignkey:service;association_foreignkey:id" json:"incidents,omitempty" yaml:"incidents"`
 	Checkins            []*checkins.Checkin   `gorm:"foreignkey:service;association_foreignkey:id" json:"checkins,omitempty" yaml:"-" scope:"user,admin"`
 	Failures            []*failures.Failure   `gorm:"-" json:"failures,omitempty" yaml:"-" scope:"user,admin"`
+	CurrentFailureCount int                   `gorm:"-" json:"-" yaml:"-"`
+	FailureThreshold    int                   `gorm:"default:0;column:failure_threshold" json:"failure_threshold"`
 
 	notifyAfterCount int64 `gorm:"-" json:"-" yaml:"-"`
 	prevOnline       bool  `gorm:"-" json:"-" yaml:"-"`
